@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  grobid:
+    build:
+      context: .
+      dockerfile: Dockerfile-grobid
+    container_name: grobid
+    ports:
+      - "8070:8070"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8070/api/isalive" ]
+      interval: 10s
+      retries: 5
+      start_period: 20s
+
+
+  client:
+    build: .
+    container_name: grobid-client
+    depends_on:
+      grobid:
+        condition: service_healthy
+    volumes:
+      - ${PDFS_FOLDER:-./pdfs}:/pdfs
+    environment:
+      - GROBID_URL=http://grobid:8070/api/processHeaderDocument
+
+
