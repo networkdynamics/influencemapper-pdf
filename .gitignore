@@ -242,3 +242,5 @@ cython_debug/
 #.idea/
 
 *_pdfs
+/*pdfs
+/.idea/misc.xml

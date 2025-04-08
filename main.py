@@ -279,7 +279,7 @@ def process_pdf(pdf_path):
 def save_to_csv(data, output_csv):
     """Save extracted metadata to a CSV file."""
     with open(output_csv, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
+        writer = csv.writer(file, delimiter='\t')
         writer.writerow(["PDF File", "Title", "Author Name", "Affiliation", "Email", "Disclosure Statement"])
         for pdf_file, metadata in data.items():
             for d in metadata:
