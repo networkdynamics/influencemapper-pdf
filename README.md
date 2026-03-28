@@ -12,5 +12,5 @@ docker-compose up
 It will automatically read a folder named `pdfs` in the root directory. If you want to pass a custom folder run the following command:
 
 ```bash
-PDFS_FOLDER=[FOLDER_DIR] docker-compose up 
+PDFS_FOLDER=[FOLDER_DIR] docker-compose up --build
 ```

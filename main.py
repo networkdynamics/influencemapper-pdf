@@ -9,8 +9,9 @@ import bs4
 import requests
 from bs4 import BeautifulSoup
 
-GROBID_URL = os.getenv("GROBID_URL", "http://grobid:8070/api/processHeaderDocument")
+GROBID_URL = os.getenv("GROBID_URL", "http://grobid:8070/api/processFulltextDocument")
 HEADERS = {"Accept": "application/xml"}
+GROBID_PARAMS = {"consolidateCitations": "1", "consolidateFunders": "1"}
 
 
 
@@ -261,13 +262,15 @@ def _clean_empty_and_duplicate_authors_from_grobid_parse(authors: List[Dict]) ->
 def process_pdf(pdf_path):
     """Send a PDF file to GROBID and return extracted metadata."""
     with open(pdf_path, "rb") as pdf_file:
-        response = requests.post(GROBID_URL, files={"input": pdf_file}, headers=HEADERS)
+        response = requests.post(GROBID_URL, files={"input": pdf_file}, data=GROBID_PARAMS, headers=HEADERS)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "xml")
+            open("/pdfs/debug.xml", "w").write(response.text)
             metadata = extract_paper_metadata_from_grobid_xml(soup.fileDesc)
             # clean metadata authors (remove dupes etc)
             metadata['authors'] = _clean_empty_and_duplicate_authors_from_grobid_parse(metadata['authors'])
             back_matter, found = extract_disclosure_from_tei_xml(soup)
+            print(f"Disclosure: {back_matter}, found: {found}")
             disclosure = ' '.join(back_matter)
             metadata['disclosure'] = disclosure
             return  metadata # XML response

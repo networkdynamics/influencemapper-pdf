@@ -25,6 +25,6 @@ services:
     volumes:
       - ${PDFS_FOLDER:-./pdfs}:/pdfs
     environment:
-      - GROBID_URL=http://grobid:8070/api/processHeaderDocument
+      - GROBID_URL=http://grobid:8070/api/processFulltextDocument
 
 
